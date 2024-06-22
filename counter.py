@@ -56,6 +56,8 @@ def main(page: flet.Page):
 
     txt_wage = TextField(label="時給", value="", text_align="right", width=100)
     txt_hours = TextField(label="時間", value="", text_align="right", width=100)
+    txt_minutes = TextField(label="分", value="", text_align="right", width=100)
+    txt_seconds = TextField(label="秒", value="", text_align="right", width=100)
     txt_result = TextField(
         label="合計金額", value="", text_align="right", width=100, read_only=True
     )
@@ -64,9 +66,16 @@ def main(page: flet.Page):
     # 賃金を計算する関数
     def calculate_wage(e):
         try:
-            wage = float(txt_wage.value)
-            hours = float(txt_hours.value)
-            total = wage * hours
+            wage = float(txt_wage.value)  # 時給
+            hours = float(txt_hours.value)  # 時間
+            minutes = float(txt_minutes.value)  # 分
+            seconds = float(txt_seconds.value)  # 秒
+
+            # 分と秒を時間に変換
+            total_hours = hours + minutes / 60 + seconds / 3600
+
+            # 賃金計算
+            total = wage * total_hours
             txt_result.value = str(total) + "円"
         except ValueError:
             txt_result.value = "入力エラー"
@@ -75,7 +84,9 @@ def main(page: flet.Page):
     btn_calculate.on_click = calculate_wage
 
     # 賃金計算アプリのコンテナにウィジェットを追加
-    wage_container.controls.extend([txt_wage, txt_hours, btn_calculate, txt_result])
+    wage_container.controls.extend(
+        [txt_wage, txt_hours, txt_minutes, txt_seconds, btn_calculate, txt_result]
+    )
     page.add(wage_container)
 
     # 賃金計算アプリを表示/非表示する関数
